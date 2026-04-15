@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Details</title>
+    <!-- Font import for consistent UI styling -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Background image pulled from Flask static folder */
+            background-image: url('{{ url_for("static", filename="images/Background.jpeg") }}');
+            background-size: cover;
+            margin: 0;
+            padding: 30px;
+            color: white;
+        }
+
+        /* Dark overlay to improve readability over background */
+        .overlay {
+            background: rgba(0,0,0,0.4);
+            min-height: 100vh;
+            padding-top: 20px;
+        }
+
+        /* Back button styling */
+        .back-btn {
+            background: white;
+            color: black;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 30px;
+            transition: background 0.3s;
+        }
+
+        /* Hover effect for back button */
+        .back-btn:hover {
+            background: #999;
+            color: white;
+        }
+
+        /* Main job detail card */
+        .job-container {
+            background: white;
+            color: black;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        h1 { margin-bottom: 15px; font-size: 1.8rem; }
+        p { margin: 8px 0; font-size: 1rem; }
+        /* Button used for start/complete job actions */
+        .mark-done-btn {
+            background: green;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+        /* Hover effect for action button */
+        .mark-done-btn:hover { background: #333; }
+        /* Optional status text styling */
+        .status { font-weight: bold; margin-top: 15px; font-size: 1.05rem; }
+    </style>
+</head>
+<body>
+<div class="overlay">
+
+    <!-- Back navigation button -->
+    <button class="back-btn" onclick="location.href='/my_jobs'">
+        ← Back to My Jobs
+    </button>
+
+    <div class="job-container">
+        <!-- Job title -->
+        <h1>{{ job[1] }}</h1>
+        <!-- Job description -->
+        <p>{{ job[2] }}</p>
+        <!-- Job price -->
+        <p>Price: ${{ job[3] }}</p>
+        <!-- Job location (street, city, state, zip) -->
+        <p>{{ job[4] }}, {{ job[5] }}, {{ job[6] }} {{ job[7] }}</p>
+
+        <!-- 
+            CONDITIONAL BUTTON LOGIC:
+
+            job[9] = requested_by (job owner email)
+            session['user_email'] = current user
+
+            job[status_index] is intended to check job status,
+            but status_index is NOT defined in template context.
+        -->
+        {% if job[9] == session['user_email'] and job[status_index] == 'accepted' %}
+        <!-- Show START JOB button when job is accepted -->
+        <button class="mark-done-btn" onclick="location.href='/start_job/{{ job[0] }}'">
+            Start Job
+        </button>
+
+        {% elif job[9] == session['user_email'] and job[status_index] == 'in_progress' %}
+        <!-- Show COMPLETE JOB button when job is in progress -->
+        <button class="mark-done-btn" onclick="location.href='/complete_job/{{ job[0] }}'">
+            Mark Done
+        </button>
+        {% endif %}
+    </div>
+
+</div>
+</body>
+</html>

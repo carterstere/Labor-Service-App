@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Page</title>
+    <!-- External CSS file for signup page styling -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sign_up_page.css') }}">
+</head>
+<body>
+
+<!-- Main hero wrapper (full page container) -->
+<div class="hero">
+    <!-- Page heading -->
+    <h1>Create an account</h1>
+
+    <!-- Error message display (shown only if Flask sends an error) -->
+    {% if error %}
+    <p style="color:red; text-align:center; margin-bottom:10px;">
+        {{ error }}
+    </p>
+    {% endif %}
+
+    <!-- Signup layout container (left form + right social login options) -->
+    <div class="signup-box">
+        <!-- LEFT SIDE: Main signup form -->
+        <div class="left-box">
+            <!-- Signup form submits to Flask signup route -->
+            <form method="POST" action="{{ url_for('signup') }}">
+                <input type="text" name="first_name" placeholder="First Name" required class="input-box">
+                <input type="text" name="last_name" placeholder="Last Name" required class="input-box">
+                <input type="email" name="email" placeholder="Email Address" required class="input-box">
+                <input type="password" name="password" placeholder="Create Password" required class="input-box">
+                <input type="password" name="confirm_password" placeholder="Confirm Password" required class="input-box">
+
+                <div>
+                    <p>Select Account Type</p>
+
+                    <input type="radio" name="account_type" value="customer" required>
+                    <label>Customer</label>
+
+                    <input type="radio" name="account_type" value="worker">
+                    <label>Worker</label>
+                </div>
+                <input type="checkbox" id="terms" required>
+                <label for="terms">I accept the terms & conditions</label>
+
+                <button type="submit">
+                    Sign Up <span>&#x27f6;</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- RIGHT SIDE: Social login / external sign-in options -->
+        <div class="right-box">
+            <a href="#" class="g-link">
+                <img src="{{ url_for('static', filename='images/google_logo.png') }}" alt="Google" class="button-logo"> Connect with Google
+            </a>
+            <a href="#" class="apple-link">
+                <img src="{{ url_for('static', filename='images/apple_logo.png') }}" alt="Apple" class="button-logo"> Connect with Apple ID
+            </a>
+            <a href="#" class="yahoo-link">
+                <img src="{{ url_for('static', filename='images/yahoo_logo.png') }}" alt="Yahoo" class="button-logo"> Connect with Yahoo
+            </a>
+        </div>
+    </div>
+
+    <!-- Link to login page for existing users -->
+    <p class="login-msg">
+        I already have an account? <a href="{{ url_for('login') }}">Login Now</a>
+    </p>
+</div>
+
+</body>
+</html>

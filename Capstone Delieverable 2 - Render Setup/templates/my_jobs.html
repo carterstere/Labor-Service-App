@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Jobs</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Page background with pattern */
+        body {
+            background-color: #d2d2d2;
+            background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2303ed07' fill-opacity='0.5'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Dark overlay over background */
+        .overlay {
+            min-height: 100vh;
+            padding: 30px;
+            background: rgba(0,0,0,0.4);
+        }
+
+        /* Main content container */
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            background: rgba(255,255,255,0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        /* Page title */
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Section titles */
+        h2 {
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+
+        /* Table layout */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        /* Table header styling */
+        th {
+            background-color: #222;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        /* Table cells */
+        td {
+            padding: 12px;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Hover effect for rows */
+        tr:hover td {
+            background-color: #f5f5f5;
+        }
+
+        /* Status badge styling */
+        .status {
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        /* Different status colors */
+        .open { background: #e0e0e0; }
+        .assigned { background: #ffe082; }
+        .progress { background: #81d4fa; }
+        .done { background: #a5d6a7; }
+
+        /* Action button styling */
+        .button {
+            padding: 6px 12px;
+            background-color: green;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .button:hover {
+            background-color: darkgreen;
+        }
+
+        /* Form inline for buttons */
+        form {
+            display: inline;
+        }
+
+        /* Back button styling */
+        .back-btn {
+            background: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .back-btn:hover {
+            background: #ddd;
+        }
+
+        /* Empty state text */
+        .empty-text {
+            margin-top: 10px;
+            color: #555;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="overlay">
+
+    <!-- BACK BUTTON TO HOME -->
+    <div style="margin-bottom: 15px;">
+        <button class="back-btn" onclick="window.location.href='/homepage'">
+            ← Back to Home
+        </button>
+    </div>
+
+    <div class="container">
+
+        <h1>My Jobs</h1>
+
+        <!-- ===================== REQUESTED JOBS SECTION ===================== -->
+        <h2>Jobs I Requested</h2>
+        {% if requested_jobs %}
+        <table>
+            <!-- Table header -->
+            <tr>
+                <th>Title</th>
+                <th>Price</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+
+            <!-- Loop through requested jobs -->
+            {% for job in requested_jobs %}
+            <tr>
+                <!-- Job info -->
+                <td>{{ job[1] }}</td>
+                <td>${{ job[2] }}</td>
+                <td>{{ job[3] }}</td>
+                <td>{{ job[4] }}</td>
+
+                <!-- Job status display -->
+                <td>
+                    {% if job[8] == 'open' %}
+                        <span class="status open">Open</span>
+                    {% elif job[8] == 'assigned' %}
+                        <span class="status assigned">Assigned</span>
+                    {% elif job[8] == 'in_progress' %}
+                        <span class="status progress">In Progress</span>
+                    {% elif job[8] == 'done' %}
+                        <span class="status done">Completed</span>
+                    {% endif %}
+                </td>
+
+                <!-- Action buttons depending on status -->
+                <td>
+                    {% if job[8] == 'open' %}
+                        <a href="/job_applications/{{ job[0] }}" class="button">View Applicants</a>
+                    {% elif job[8] == 'done' %}
+                        <span class="status done">Completed</span>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p class="empty-text">You haven't requested any jobs yet.</p>
+        {% endif %}
+
+
+        <!-- ===================== APPLIED JOBS SECTION ===================== -->
+        <h2>Jobs I Applied For</h2>
+        {% if applied_jobs %}
+        <table>
+            <!-- Table header -->
+            <tr>
+                <th>Title</th>
+                <th>Price</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Distance</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+
+            <!-- Loop through applied jobs -->
+            {% for job in applied_jobs %}
+            <tr>
+                <!-- Job details -->
+                <td>{{ job[1] }}</td>
+                <td>${{ job[2] }}</td>
+                <td>{{ job[3] }}</td>
+                <td>{{ job[4] }}</td>
+                <td>{{ job[10] if job[10] else '-' }}</td>
+
+                <!-- Status logic -->
+                <td>
+                    {% if job[7] == 'open' %}
+                        <span class="status open">Open</span>
+
+                    {% elif job[7] == 'assigned' %}
+                        <span class="status assigned">Assigned</span>
+
+                    {% elif job[7] == 'in_progress' %}
+                        <span class="status progress">In Progress</span>
+
+                    {% elif job[7] == 'done' %}
+                        <span class="status done">Completed</span>
+
+                    {% else %}
+                        <span class="status">{{ job[11] }}</span>
+                    {% endif %}
+                </td>
+
+                <!-- Action buttons depending on job state -->
+                <td>
+                {% if job[9] %}
+
+                    {% if job[7] == 'assigned' %}
+                        <form action="/update_job_status/{{ job[0] }}" method="POST">
+                            <input type="hidden" name="status" value="in_progress">
+                            <button type="submit" class="button">Start Job</button>
+                        </form>
+
+                    {% elif job[7] == 'in_progress' %}
+                        <form action="/update_job_status/{{ job[0] }}" method="POST">
+                            <input type="hidden" name="status" value="done">
+                            <button type="submit" class="button">Mark as Done</button>
+                        </form>
+
+                    {% elif job[7] == 'done' %}
+                        <span class="status done">Completed</span>
+
+                    {% endif %}
+
+                {% else %}
+                    <a href="/job_details/{{ job[0] }}" class="button">View Details</a>
+                {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p class="empty-text">You haven't applied for any jobs yet.</p>
+        {% endif %}
+
+    </div>
+</div>
+
+</body>
+</html>

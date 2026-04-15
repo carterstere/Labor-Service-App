@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Available Jobs</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Page background image */
+        body {
+            margin: 0;
+            background-image: url('{{ url_for("static", filename="images/Background.jpeg") }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Dark overlay for readability */
+        .overlay {
+            background: rgba(0,0,0,0.4);
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        /* Page title */
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        /* Container for job cards */
+        .job-list {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        /* Individual job card */
+        .job-card {
+            background: rgba(255,255,255,0.9);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Job info text */
+        .job-info {
+            font-size: 16px;
+        }
+
+        /* View job button */
+        .view-btn {
+            background: green;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .view-btn:hover {
+            background: darkgreen;
+        }
+
+        /* Sort/filter button container */
+        .sort-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Sort buttons */
+        .sort-btn {
+            background: white;
+            border: none;
+            padding: 8px 12px;
+            margin: 5px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .sort-btn:hover {
+            background: #ddd;
+        }
+
+        /* Popup for filtering by title */
+        .title-popup {
+            display: none;
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            width: 250px;
+            max-height: 300px;
+            overflow-y: auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 100;
+        }
+
+        /* Close button for popup */
+        .close-popup {
+            position: absolute;
+            right: 8px;
+            top: 4px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        /* Apply filter button */
+        .accept-btn {
+            width: 100%;
+            padding: 10px;
+            background: green;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .accept-btn:hover {
+            background: darkgreen;
+        }
+
+        /* Modal background overlay */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+        }
+
+        /* Modal content box */
+        .modal-content {
+            background: white;
+            width: 400px;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        /* Close modal button */
+        .close {
+            position: absolute;
+            right: 10px;
+            top: 5px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .modal p {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="overlay">
+
+    <!-- Back to home button -->
+    <div style="text-align:left; margin-bottom:10px;">
+        <button class="sort-btn" onclick="window.location.href='/homepage'">
+            ← Back to Home
+        </button>
+    </div>
+
+    <h1>Available Jobs</h1>
+
+    <!-- FILTER / SORT BUTTONS -->
+    <div class="sort-container">
+
+        <button class="sort-btn" onclick="window.location.href='/provide_services?sort=low'">
+            Price: Low → High
+        </button>
+
+        <button class="sort-btn" onclick="window.location.href='/provide_services?sort=high'">
+            Price: High → Low
+        </button>
+
+        <button class="sort-btn" onclick="window.location.href='/provide_services?distance=10'">
+            Within 10 miles
+        </button>
+
+        <button class="sort-btn" onclick="window.location.href='/provide_services?distance=25'">
+            Within 25 miles
+        </button>
+
+        <button class="sort-btn" onclick="window.location.href='/provide_services?distance=50'">
+            Within 50 miles
+        </button>
+
+        <button class="sort-btn" onclick="window.location.href='/provide_services?distance=100'">
+            Within 100 miles
+        </button>
+
+        <button class="sort-btn" onclick="openTitlePopup(this)">
+            Filter by Title
+        </button>
+
+        <button class="sort-btn" onclick="window.location.href='/provide_services'">
+            Reset
+        </button>
+
+    </div>
+
+    <!-- TITLE FILTER POPUP -->
+    <div id="titleFilterPopup" class="title-popup">
+        <span class="close-popup" onclick="closeTitlePopup()">&times;</span>
+        <h3>Filter by Job Title</h3>
+
+        <!-- TITLE FILTER POPUP -->
+        <div style="display:flex; gap:5px; margin-bottom:10px;">
+            <button class="sort-btn" onclick="sortTitles('alpha')">A → Z</button>
+            <button class="sort-btn" onclick="sortTitles('count')">Most Jobs</button>
+        </div>
+
+        <!-- Dynamic title list injected by JS -->
+        <div id="titleList"></div>
+
+        <button class="accept-btn" onclick="applyTitleFilter()">Apply</button>
+    </div>
+
+    <!-- JOB LIST -->
+    <div class="job-list">
+        {% for job in jobs %}
+        <div class="job-card">
+            <!-- Job info display -->
+            <div class="job-info">
+                <strong>{{ job[1] }}</strong><br>
+                {{ job[5] }}, {{ job[6] }}<br>
+
+                {% if job[14] %}
+                    <span><strong>{{ job[14] }}</strong></span>
+                {% else %}
+                    <span>Distance unavailable</span>
+                {% endif %}
+            </div>
+
+            <!-- View job modal button -->
+            <button class="view-btn"
+            onclick='openModal(
+                "{{ job[0] }}",
+                "{{ job[1] }}",
+                "{{ job[2] }}",
+                "{{ job[3] }}",
+                "{{ job[4] }}",
+                "{{ job[5] }}",
+                "{{ job[6] }}",
+                "{{ job[7] }}",
+                "{{ job[8] }}",
+                "{{ job[9] }}",
+                "{{ job[10] }}"
+            )'>
+            View
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- JOB DETAIL MODAL -->
+<div id="jobModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+
+        <!-- Modal job fields -->
+        <h2 id="m_title"></h2>
+        <p><strong>Description:</strong> <span id="m_desc"></span></p>
+        <p><strong>Price:</strong> $<span id="m_price"></span></p>
+        <p><strong>Address:</strong> <span id="m_address"></span></p>
+        <p><strong>Requested By:</strong> <span id="m_user"></span></p>
+        <p><strong>Status:</strong> <span id="m_status"></span></p>
+        <p><strong>Created:</strong> <span id="m_created"></span></p>
+
+        <!-- Apply button -->
+        <button id="acceptBtn" class="accept-btn" onclick="applyJob()">
+            Apply
+        </button>
+    </div>
+</div>
+
+<script>
+/* Job titles data from backend */
+const jobTitlesData = JSON.parse('{{ job_titles | tojson | safe }}');
+
+/* Selected filters from backend */
+const selectedTitles = "{{ selected_titles if selected_titles else '' }}"
+    ? "{{ selected_titles if selected_titles else '' }}".split(',')
+    : [];
+
+/* Current sorting mode */
+let currentSort = "alpha";
+
+/* Render title filter list */
+function renderTitles() {
+    const container = document.getElementById("titleList");
+    container.innerHTML = "";
+
+    let entries = Object.entries(jobTitlesData);
+
+    if (currentSort === "alpha") {
+        entries.sort((a, b) => a[0].localeCompare(b[0]));
+    } else {
+        entries.sort((a, b) => b[1] - a[1]);
+    }
+
+    entries.forEach(([title, count]) => {
+        const isChecked = selectedTitles.includes(title);
+
+        container.innerHTML += `
+            <label>
+                <input type="checkbox" name="title" value="${title}" ${isChecked ? "checked" : ""}>
+                ${title} (${count})
+            </label><br>
+        `;
+    });
+}
+
+/* Change sort type */
+function sortTitles(type) {
+    currentSort = type;
+    renderTitles();
+}
+
+/* Open job modal */
+function openModal(id, title, desc, price, street, city, state, zip, user, status, created) {
+    document.getElementById("m_title").innerText = title;
+    document.getElementById("m_desc").innerText = desc;
+    document.getElementById("m_price").innerText = price;
+    document.getElementById("m_address").innerText = street + ", " + city + ", " + state + " " + zip;
+    document.getElementById("m_user").innerText = user;
+    document.getElementById("m_status").innerText = status;
+    document.getElementById("m_created").innerText = created;
+
+    document.getElementById("jobModal").style.display = "block";
+}
+
+/* Close modal */
+function closeModal() {
+    document.getElementById("jobModal").style.display = "none";
+}
+
+/* Open title filter popup */
+function openTitlePopup(button) {
+    const popup = document.getElementById("titleFilterPopup");
+    const rect = button.getBoundingClientRect();
+
+    popup.style.top = (rect.bottom + window.scrollY + 5) + "px";
+    popup.style.left = (rect.left + window.scrollX) + "px";
+    popup.style.display = "block";
+
+    renderTitles();
+}
+
+/* Close popup */
+function closeTitlePopup() {
+    document.getElementById("titleFilterPopup").style.display = "none";
+}
+
+/* Apply selected title filter */
+function applyTitleFilter() {
+    const checkboxes = document.querySelectorAll('input[name="title"]:checked');
+    const titles = Array.from(checkboxes).map(cb => cb.value).join(',');
+
+    const params = new URLSearchParams(window.location.search);
+
+    if (titles.length) {
+        params.set('titles', titles);
+    } else {
+        params.delete('titles');
+    }
+
+    window.location.href = '/provide_services?' + params.toString();
+}
+
+/* Close modal if clicking outside */
+window.onclick = function(event) {
+    const modal = document.getElementById("jobModal");
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+/* Stores current job id */
+let currentJobId = null;
+
+/* Open modal + check if already applied */
+function openModal(id, title, desc, price, street, city, state, zip, user, status, created) {
+    currentJobId = id;  
+
+    document.getElementById("m_title").innerText = title;
+    document.getElementById("m_desc").innerText = desc;
+    document.getElementById("m_price").innerText = price;
+    document.getElementById("m_address").innerText = street + ", " + city + ", " + state + " " + zip;
+    document.getElementById("m_user").innerText = user;
+    document.getElementById("m_status").innerText = status;
+    document.getElementById("m_created").innerText = created;
+
+    const btn = document.getElementById("acceptBtn");
+
+    /* Check if user already applied */
+    fetch(`/check_applied/${currentJobId}`)
+    .then(res => res.text())
+    .then(result => {
+        if (result === "applied") {
+            btn.innerText = "Applied";
+            btn.disabled = true;
+            btn.style.background = "gray";
+            btn.style.cursor = "default";
+        } else {
+            btn.innerText = "Apply";
+            btn.disabled = false;
+            btn.style.background = "green";
+            btn.style.cursor = "pointer";
+        }
+    });
+
+    document.getElementById("jobModal").style.display = "block";
+}
+
+/* Apply for job */
+function applyJob() {
+    if (!currentJobId) return;
+
+    fetch("/apply_job", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: `job_id=${currentJobId}`
+    })
+    .then(response => response.text())
+    .then(result => {
+        const btn = document.getElementById("acceptBtn");
+
+        if (result === "applied") {
+            alert("You have successfully applied for this job!");
+            btn.innerText = "Applied";
+            btn.disabled = true;
+            btn.style.background = "gray";
+            btn.style.cursor = "default";
+        } else if (result === "already_applied") {
+            alert("You have already applied for this job.");
+            btn.innerText = "Applied";
+            btn.disabled = true;
+            btn.style.background = "gray";
+            btn.style.cursor = "default";
+        } else {
+            alert("Something went wrong. Please try again.");
+        }
+    });
+}
+</script>
+
+</body>
+</html>

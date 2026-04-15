@@ -1,0 +1,190 @@
+/* Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+
+/* Hero Section with same background as login */
+.hero {
+    width: 100%;
+    min-height: 100vh;
+
+    background-color: #d2d2d2;
+    background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2303ed07' fill-opacity='0.5'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.hero h1 {
+    color: #fff;
+    font-weight: 500;
+    margin-bottom: 40px;
+}
+
+/* Signup Box */
+.signup-box {
+    display: flex;
+    align-items: stretch;
+    flex-wrap: wrap;
+    width: 90%;
+    max-width: 800px;
+    background: #fff;
+}
+
+/* Left Block */
+.left-box {
+    padding: 50px;
+    background-image:
+        linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+        url("../images/background_image.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    flex-basis: 50%;
+    flex-grow: 1;
+    color: #fff;
+}
+
+.input-box {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #fff;
+    outline: none;
+    color: #fff;
+    font-size: 12px;
+    background: transparent;
+}
+
+::placeholder {
+    color: #fff;
+}
+
+.account-type {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.account-type p {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.account-type label {
+    margin-right: 15px;
+    font-size: 14px;
+}
+
+input[type=checkbox] {
+    margin-top: 20px;
+}
+
+.left-box label {
+    font-size: 14px;
+}
+
+.left-box button {
+    width: 100%;
+    background: #fff;
+    padding: 12px;
+    border: 0;
+    outline: none;
+    font-size: 16px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: background 0.5s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.left-box button:hover {
+    font-weight: 500;
+    background: #000;
+    color: #fff;
+}
+
+.left-box button span {
+    display: inline-block;
+    width: 0px;
+    overflow: hidden;
+    transition: width 0.5s;
+}
+
+.left-box button:hover span {
+    width: 30px;
+}
+
+/* Right Block */
+.right-box {
+    padding: 50px;
+    flex-basis: 50%;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 25px;
+
+    background-image: url("../images/background_image_2.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    color: #fff;
+}
+
+/* Social buttons */
+.right-box a {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    color: #fff;
+    font-size: 18px;
+    padding: 25px 20px;
+    text-decoration: none;
+    border-radius: 8px;
+    gap: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    transition: transform 0.3s;
+}
+
+.right-box a:hover {
+    transform: translateY(-3px);
+}
+
+.right-box a img.button-logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+/* Individual button colors */
+.g-link {
+    background: #ea4335;
+}
+
+.apple-link {
+    background: #000;
+}
+
+.yahoo-link {
+    background: #6001d2;
+}
+
+/* Login message */
+.login-msg {
+    color: #fff;
+    margin-top: 30px;
+    font-size: 15px;
+}
+
+.login-msg a {
+    color: #ea4335;
+    text-decoration: none;
+}

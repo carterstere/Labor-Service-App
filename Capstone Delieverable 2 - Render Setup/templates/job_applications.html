@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Applicants</title>
+    <!-- Import Google Font for consistent UI styling -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Base page styling */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            /* Background image pulled from Flask static folder */
+            background-image: url('{{ url_for("static", filename="images/Background.jpeg") }}'); 
+            background-size: cover; 
+            margin: 0; 
+        }
+        /* Dark overlay to improve readability over background image */
+        .overlay { 
+            background: rgba(0,0,0,0.6); 
+            min-height: 100vh; 
+            padding: 30px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        /* Page title styling */
+        h1 { color:white; text-align:center; margin-bottom:20px; }
+        /* Main applicant card container */
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            width: 450px;       
+            max-width: 90%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            font-size: 18px;    
+        }
+        /* Hide cards that are not currently active */
+        .profile-card.hidden { display: none; }
+        /* Text formatting inside each applicant card */
+        .profile-info p { margin: 10px 0; font-size: 18px; }
+        /* Navigation buttons (left/right arrows) */
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.8);
+            border: none;
+            font-size: 30px;
+            cursor: pointer;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        /* Position previous button */
+        #prev-btn { left: -90px; }
+        /* Position next button */
+        #next-btn { right: -90px; }
+        /* Container for accept/reject buttons */
+        .action-buttons {
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 50px;
+        }
+        /* Shared styling for accept/reject buttons */
+        .action-btn {
+            border: none;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            font-size: 32px;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        /* Accept button styling */
+        .accept-btn { background: green; }
+        /* Reject button styling */
+        .reject-btn { background: red; }
+        /* Back button styling */
+        .back-btn { background:white; color:black; border:none; padding:10px 15px; border-radius:6px; cursor:pointer; margin-bottom:20px; }
+        /* Back button hover effect */
+        .back-btn:hover { background:#ddd; }
+        /* Message when no applicants exist */
+        .empty-message { color:white; text-align:center; margin-top:40px; font-size:18px; display:none; }
+        /* Wrapper for positioning cards + navigation */
+        .card-container { position: relative; margin-top: 20px; }
+    </style>
+</head>
+<body>
+<!-- Main overlay wrapper for dark background effect -->
+<div class="overlay">
+
+    <!-- Back navigation button -->
+    <div style="align-self: flex-start;">
+        <button class="back-btn" onclick="location.href='/my_jobs'">
+            ← Back to My Jobs
+        </button>
+    </div>
+
+    <!-- Page title showing job name dynamically from backend -->
+    <h1>Applicants for {{ job[1] }}</h1>
+
+    <!-- If no applicants exist, show message -->
+    {% if applicants|length == 0 %}
+        <div class="empty-message" style="display:block;">No applicants yet.</div>
+    {% else %}
+        <!-- Card system container -->
+        <div class="card-container">
+            <!-- Loop through all applicants from backend -->
+            {% for applicant in applicants %}
+            <div class="profile-card {% if not loop.first %}hidden{% endif %}" data-index="{{ loop.index0 }}">
+                <!-- Applicant information section -->
+                <div class="profile-info">
+                    <p><strong>{{ applicant[0] }} {{ applicant[1] }}</strong></p>
+                    <p>Email: {{ applicant[2] }}</p>
+                    <p>Phone: {{ applicant[3] }}</p>
+                    <p>Distance: {{ applicant[5] }}</p>
+                </div>
+                <!-- Action buttons for hiring decision -->
+                <div class="action-buttons">
+                    <!-- Accept worker (sends request to Flask route) -->
+                    <button class="action-btn accept-btn"
+                        onclick="location.href='/accept_worker/{{ job[0] }}/{{ applicant[2] }}'">
+                        ✔
+                    </button>
+                    <!-- Reject worker (handled via fetch API call) -->
+                    <button class="action-btn reject-btn"
+                        onclick="rejectWorker('{{ job[0] }}','{{ applicant[2] }}', this)">
+                        ✖
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Navigation arrows for browsing applicants -->
+            <button id="prev-btn" class="nav-btn">&#8592;</button>
+            <button id="next-btn" class="nav-btn">&#8594;</button>
+        </div>
+    {% endif %}
+
+    <!-- Shown if all applicants are removed -->
+    <div class="empty-message">No applicants left.</div>
+</div>
+
+<script>
+    // Get all applicant cards
+    const cardsContainer = document.querySelector('.card-container');
+    let cards = document.querySelectorAll('.profile-card');
+    // Tracks which applicant card is currently shown
+    let currentIndex = 0;
+
+    // Function to display only one card at a time
+    function showCard(index) {
+        cards.forEach((card, i) => card.classList.toggle('hidden', i !== index));
+    }
+
+    // Navigate to previous applicant
+    document.getElementById('prev-btn').addEventListener('click', () => {
+        if (cards.length === 0) return;
+        currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+        showCard(currentIndex);
+    });
+
+    // Navigate to next applicant
+    document.getElementById('next-btn').addEventListener('click', () => {
+        if (cards.length === 0) return;
+        currentIndex = (currentIndex + 1) % cards.length;
+        showCard(currentIndex);
+    });
+
+    // Reject worker using backend route (AJAX call)
+    function rejectWorker(jobId, workerEmail, btn) {
+        fetch(`/reject_worker/${jobId}/${workerEmail}`)
+            .then(() => {
+                const card = btn.closest('.profile-card');
+                card.remove();
+                // update cards NodeList
+                cards = document.querySelectorAll('.profile-card');
+                if (cards.length === 0) {
+                    document.querySelectorAll('.empty-message').forEach(msg => msg.style.display = 'block');
+                } else if (currentIndex >= cards.length) {
+                    currentIndex = cards.length - 1;
+                    showCard(currentIndex);
+                }
+            });
+    }
+</script>
+</body>
+</html>

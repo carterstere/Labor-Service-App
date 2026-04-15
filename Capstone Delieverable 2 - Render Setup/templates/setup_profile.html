@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Setup Profile</title>
+
+    <!-- Google font for consistent UI styling -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Reset default spacing + set global font */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Full-page centered background */
+        body {
+            background-color: #d2d2d2;
+            background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2303ed07' fill-opacity='0.5'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        /* Main form container card */
+        .container {
+            width: 420px;
+            background-color: #ccc;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.35);
+        }
+
+        /* Page title */
+        h1 {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        /* Input + dropdown styling */
+        input, select {
+            width: 100%;
+            padding: 6px 8px;
+            margin: 5px 0;
+            border-radius: 8px;
+            border: 1px solid #999;
+            outline: none;
+            font-size: 13px;
+        }
+
+        /* Disabled fields (read-only user info) */
+        input:disabled {
+            background-color: #eee;
+        }
+
+        /* Submit button styling */
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: green;
+            color: #fff;
+            font-size: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 6px;
+            transition: 0.3s;
+        }
+
+        /* Hover effect for submit button */
+        button:hover {
+            background-color: darkgreen;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Profile setup container -->
+<div class="container">
+    <h1>Complete Profile</h1>
+
+    <!-- Profile form submission -->
+    <form method="POST">
+        <!-- Locked user identity fields (cannot be edited) -->
+        <input type="text" value="{{ user[0] }}" disabled>
+        <input type="text" value="{{ user[1] }}" disabled>
+        <input type="email" value="{{ user[2] }}" disabled>
+
+         <!-- Editable address fields -->
+        <input type="text" name="street_address" placeholder="Street Address" value="{{ user[3] or '' }}">
+        <input type="text" name="city" placeholder="City" value="{{ user[4] or '' }}">
+
+        <!-- State dropdown selection -->
+        <select name="state">
+            {% set states = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA',
+            'HI','ID','IL','IN','IA','KS','KY','LA','ME','MD',
+            'MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ',
+            'NM','NY','NC','ND','OH','OK','OR','PA','RI','SC',
+            'SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'] %}
+
+            <!-- Render dropdown options -->
+            {% for s in states %}
+                <option value="{{ s }}" {% if user[5] == s %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- ZIP code input -->
+        <input type="text" name="zip_code" placeholder="Zip Code" value="{{ user[6] or '' }}" maxlength="5">
+        <!-- Phone number input -->
+        <input type="text" name="phone" placeholder="123-456-7890" value="{{ user[7] or '' }}" maxlength="12">
+        <!-- Birthdate field (new profile attribute) -->
+        <input type="date" name="birthdate" value="{{ user[8] or '' }}">
+
+        <!-- Submit profile form -->
+        <button type="submit">Save</button>
+    </form>
+</div>
+
+<script>
+/*
+    Auto-format phone number as user types:
+    - Removes all non-numeric characters
+    - Formats as XXX-XXX-XXXX
+*/
+document.addEventListener("DOMContentLoaded", function() {
+    const phoneInput = document.querySelector('input[name="phone"]');
+
+    phoneInput.addEventListener("input", function() {
+        let value = phoneInput.value.replace(/\D/g, "");
+
+        if (value.length > 3 && value.length <= 6) {
+            value = value.slice(0,3) + "-" + value.slice(3);
+        } 
+        else if (value.length > 6) {
+            value = value.slice(0,3) + "-" + value.slice(3,6) + "-" + value.slice(6,10);
+        }
+
+        phoneInput.value = value;
+    });
+});
+</script>
+
+</body>
+</html>

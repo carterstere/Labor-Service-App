@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Request a Job</title>
+    <!-- Google Font for consistent styling across the app -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * { font-family: 'Poppins', sans-serif; }
+        /* Page background (full-screen image) */
+        body {
+            margin: 0;
+            background-image: url('{{ url_for("static", filename="images/Background.jpeg") }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        /* Dark overlay layer for readability */
+        .overlay {
+            background: rgba(0,0,0,0.4);
+            min-height: 100vh;
+            padding: 30px;
+        }
+        /* Page title styling */
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        /* Form container styling */
+        form {
+            max-width: 600px;
+            margin: auto;
+            background: rgba(255,255,255,0.9);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        /* Label spacing */
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        /* Inputs, dropdowns, text areas styling */
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        /* Allow textarea resizing vertically only */
+        textarea { resize: vertical; }
+        /* Top navigation button container */
+        .button-group {
+            text-align: left;
+            margin-bottom: 10px;
+        }
+        /* Navigation buttons (back button) */
+        .button-group button {
+            background: white;
+            border: none;
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .button-group button:hover { background: #ddd; }
+        /* Submit button styling */
+        button.submit-btn {
+            margin-top: 15px;
+            padding: 10px;
+            background: green;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button.submit-btn:hover { background: darkgreen; }
+
+        /* Profile address checkbox container */
+        .profile-address {
+            margin-top: 15px;
+            margin-bottom: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px; 
+        }
+        /* Checkbox label styling */
+        .profile-address label {
+            font-weight: 500;
+            white-space: nowrap;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+        }
+        /* Checkbox alignment fix */
+        .profile-address input[type="checkbox"] {
+            margin: 0;
+            padding: 0;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+<div class="overlay">
+    <!-- Back navigation -->
+    <div class="button-group">
+        <button onclick="window.location.href='/homepage'">← Back to Home</button>
+    </div>
+
+    <!-- Page heading -->
+    <h1>Request a Job</h1>
+
+    <!-- Job request form -->
+    <form method="POST" action="/request_services">
+        <!-- Job title dropdown -->
+        <label for="title">Job Title</label>
+        <select name="title" id="title" required>
+            {% for job_title in job_titles %}
+                <option value="{{ job_title }}">{{ job_title }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Job description input -->
+        <label for="description">Description</label>
+        <textarea name="description" id="description" rows="4" required></textarea>
+
+        <!-- Price input -->
+        <label for="price">Price ($)</label>
+        <input type="number" name="price" id="price" min="0" step="0.01" required>
+
+        <!-- Checkbox to auto-fill address from profile -->
+        <div class="profile-address">
+            <label for="use_profile_address">Use My Profile Address</label>
+            <input type="checkbox" id="use_profile_address" onclick="toggleProfileAddress(this)">
+        </div>
+
+        <!-- Address inputs -->
+        <label for="street_address">Street Address</label>
+        <input type="text" name="street_address" id="street_address" required>
+
+        <label for="city">City</label>
+        <input type="text" name="city" id="city" required>
+
+        <label for="state">State</label>
+        <input type="text" name="state" id="state" required>
+
+        <label for="zip_code">ZIP Code</label>
+        <input type="text" name="zip_code" id="zip_code" required>
+
+        <!-- Submit form button -->
+        <button type="submit" class="submit-btn">Submit Job Request</button>
+    </form>
+</div>
+
+<script>
+/* 
+    Toggles whether the form uses saved profile address or clears fields.
+    Pulls values from Flask template variables.
+*/
+function toggleProfileAddress(checkbox) {
+    if (checkbox.checked) {
+        document.getElementById('street_address').value = "{{ user[3] or '' }}";
+        document.getElementById('city').value = "{{ user[4] or '' }}";
+        document.getElementById('state').value = "{{ user[5] or '' }}";
+        document.getElementById('zip_code').value = "{{ user[6] or '' }}";
+    } else {
+        document.getElementById('street_address').value = "";
+        document.getElementById('city').value = "";
+        document.getElementById('state').value = "";
+        document.getElementById('zip_code').value = "";
+    }
+}
+</script>
+</body>
+</html>

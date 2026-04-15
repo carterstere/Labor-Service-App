@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile</title>
+
+    <!-- Google font import -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Reset + base font */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Page background + centering layout */
+        body {
+            background-color: #d2d2d2;
+            background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2303ed07' fill-opacity='0.5'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        /* Profile card container */
+        .container {
+            width: 420px;
+            background-color: #ccc;
+            padding: 20px; 
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.35);
+        }
+
+        /* Page title */
+        h1 {
+            text-align: center;
+            margin-bottom: 12px; 
+        }
+
+        /* User name display */
+        p {
+            text-align: center;
+            margin-bottom: 12px; 
+        }
+
+        /* Form inputs styling */
+        input, select {
+            width: 100%;
+            padding: 6px 8px; 
+            margin: 5px 0;    
+            border-radius: 8px;
+            border: 1px solid #999;
+            outline: none;
+            font-size: 13px;  
+        }
+
+        /* Submit button */
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: green;
+            color: #fff;
+            font-size: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 6px; 
+            transition: 0.3s;
+        }
+
+        /* Button hover effect */
+        button:hover {
+            background-color: darkgreen;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- PROFILE CARD -->
+<div class="container">
+    <h1>Your Profile</h1>
+
+    <!-- PROFILE FORM -->
+    <form method="POST">
+
+        <!-- User full name display -->
+        <p><strong>{{ user[0] }} {{ user[1] }}</strong></p>
+
+        <!-- Email field -->
+        <input type="email" name="email" value="{{ user[2] }}" required>
+
+        <!-- Account type selector -->
+        <select name="account_type">
+            <option value="customer" {% if user[8] == 'customer' %}selected{% endif %}>Customer</option>
+            <option value="worker" {% if user[8] == 'worker' %}selected{% endif %}>Worker</option>
+        </select>
+
+        <!-- Address fields -->
+        <input type="text" name="street_address" value="{{ user[3] or '' }}">
+        <input type="text" name="city" value="{{ user[4] or '' }}">
+
+        <!-- State dropdown -->
+        <select name="state">
+            {% set states = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA',
+            'HI','ID','IL','IN','IA','KS','KY','LA','ME','MD',
+            'MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ',
+            'NM','NY','NC','ND','OH','OK','OR','PA','RI','SC',
+            'SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'] %}
+
+            <!-- Loop through states and pre-select user's state -->
+            {% for s in states %}
+                <option value="{{ s }}" {% if user[5] == s %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Contact fields -->
+        <input type="text" name="zip_code" value="{{ user[6] or '' }}" maxlength="5">
+        <input type="text" name="phone" value="{{ user[7] or '' }}" maxlength="12">
+
+        <!-- Submit button -->
+        <button type="submit">Update</button>
+    </form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome page</title>
+    <!-- Link to external CSS file (shared styling across pages) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        /* ================= COMPARISON SECTION ================= */
+        /* Displays two images side-by-side (our workers vs others) */
+        #comparison {
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        #comparison img {
+            width: 400px;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        #comparison p {
+            margin-top: 10px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        /* ================= HOW IT WORKS SECTION ================= */
+        /* Explains user flow: post job → match → complete */
+        #how-it-works {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-top: 40px;
+            text-align: center;
+            flex-wrap: wrap;
+        }
+
+        /* ================= REVIEWS SECTION ================= */
+        /* Customer testimonial cards */
+        #reviews {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .review-card {
+            background: white;
+            width: 280px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+            text-align: left;
+        }
+
+        .review-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .stars {
+            color: gold;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .review-text {
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* ================= LOGIN / SIGNUP BUTTON BAR ================= */
+        /* Top-left authentication buttons */
+        #login {
+            text-align: left;
+            margin: 5px 20px; 
+        }
+
+        #login button {
+            font-size: 16px;
+            padding: 10px 25px;
+            margin-right: 10px;
+            background-color: #006400; 
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #login button:hover {
+            opacity: 0.9;
+        }
+
+        /* ================= LABOR CALCULATOR INPUT AREA ================= */
+        #serviceInputs input[type="number"] {
+            width: 80px;
+            margin: 5px;
+        }
+
+        #serviceInputs button,
+        #labor-options button {
+            margin-top: 10px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: none;
+            background-color: #006400; /* dark green */
+            color: white;
+            cursor: pointer;
+        }
+
+        #serviceInputs button:hover,
+        #labor-options button:hover {
+            opacity: 0.9;
+        }
+
+        /* Output display for calculated price */
+        #result {
+            margin-top: 15px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ================= LOGIN / SIGNUP BUTTONS ================= -->
+    <div id="login">
+        <button onclick="window.location.href='{{ url_for('login') }}'">Login</button>
+        <button onclick="window.location.href='{{ url_for('signup') }}'">Sign up</button>
+    </div>
+
+    <div id="main">
+        <!-- Page title -->
+        <h1 style="text-align: center;">Welcome</h1>
+
+        <!-- Short platform description -->
+        <p style="text-align: center; font-size: 18px; margin-top: 5px;">
+            On-demand labor services in minutes — fast, reliable, and trusted.
+        </p>
+
+        <!-- ================= LABOR PRICE CALCULATOR ================= -->
+        <!-- Allows users to estimate job cost before posting -->
+        <div id="labor-calculator" style="text-align:center; margin-top: 20px; margin-bottom:60px;">
+            <h2>Calculate Your Service Price</h2>
+            <!-- Buttons to select service type -->
+            <div id="labor-options">
+                <button onclick="selectService('LawnMowing')">LawnMowing/Weed Wacking</button>
+                <button onclick="selectService('LeafSnow')">Leaf Removal/Snow Removal</button>
+                <button onclick="selectService('Maintenance')">Maintenance</button>
+                <button onclick="selectService('Cleaning')">Cleaning Services</button>
+                <button onclick="selectService('Junk')">Junk Removal</button>
+                <button onclick="selectService('Rearrangement')">Item Rearrangement</button>
+                <button onclick="selectService('Gardening')">General Gardening Services</button>
+            </div>
+
+            <!-- Dynamic input fields appear here based on selection -->
+            <div id="serviceInputs" style="margin-top:15px;"></div>
+            <!-- Result output (price display) -->
+            <div id="result"></div>
+        </div>
+
+        <!-- ================= IMAGE COMPARISON SECTION ================= -->
+        <div id="comparison">
+            <!-- "Good workers" visual -->
+            <div>
+                <img src="{{ url_for('static', filename='images/strong_man.png') }}">
+                <p>Our Workers 💪</p>
+            </div>
+
+            <!-- "Bad workers" visual -->
+            <div>
+                <img src="{{ url_for('static', filename='images/skinny_man.png') }}">
+                <p>Not Our Workers 😬</p>
+            </div>
+        </div>
+
+        <!-- ================= HOW IT WORKS ================= -->
+        <div id="how-it-works">
+            <div>
+                <h3>1. Post a Job</h3>
+                <p>Describe what you need done</p>
+            </div>
+
+            <div>
+                <h3>2. Get Matched</h3>
+                <p>Nearby workers accept instantly</p>
+            </div>
+
+            <div>
+                <h3>3. Get It Done</h3>
+                <p>Fast, reliable service at your door</p>
+            </div>
+        </div>
+
+        <!-- ================= REVIEWS SECTION ================= -->
+        <h2 style="text-align: center; margin-top: 40px;">
+            What Our Customers Are Saying
+        </h2>
+
+        
+        <div id="reviews">
+
+            <!-- Review 1 -->
+            <div class="review-card">
+                <div class="review-name">James R.</div>
+                <div class="stars">★★★★★</div>
+                <div class="review-text">
+                    “Honestly feels like DoorDash but for labor. Super fast and reliable.”
+                </div>
+            </div>
+
+            <!-- Review 2 -->
+            <div class="review-card">
+                <div class="review-name">Ashley M.</div>
+                <div class="stars">★★★★★</div>
+                <div class="review-text">
+                    “Booked someone to help move furniture and they showed up within the hour. Amazing service.”
+                </div>
+            </div>
+
+            <!-- Review 3 -->
+            <div class="review-card">
+                <div class="review-name">David K.</div>
+                <div class="stars">★★★★★</div>
+                <div class="review-text">
+                    “Way better than trying to find help on my own. Super professional workers.”
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT: LABOR CALCULATOR LOGIC ================= -->
+    <script>
+        // Handles which service type the user selects
+        function selectService(service) {
+            const container = document.getElementById("serviceInputs");
+            // Clear previous inputs/results
+            container.innerHTML = "";
+            document.getElementById("result").innerHTML = "";
+
+            // Dynamically generate inputs based on service type
+            switch(service) {
+                case "LawnMowing":
+                case "LeafSnow":
+                    container.innerHTML = `
+                        <label>Number of Areas:</label>
+                        <input type="number" id="numAreas" min="1" value="1">
+                        <button onclick="generateInputs()">Generate Inputs</button>
+                        <div id="areasContainer"></div>
+                    `;
+                    break;
+                case "Maintenance":
+                    container.innerHTML = `
+                        <label>Number of Items:</label>
+                        <input type="number" id="numquantity" min="1">
+                        <button onclick="PriceMaintenence()">Calculate Price</button>
+                    `;
+                    break;
+                case "Cleaning":
+                    container.innerHTML = `
+                        <label><input type="radio" name="choice" value="Gutter Cleaning"> Gutter Cleaning ($10)</label><br>
+                        <label><input type="radio" name="choice" value="Car Cleaning"> Car Cleaning ($50)</label><br>
+                        <button onclick="SelectCleaning()">Calculate Price</button>
+                    `;
+                    break;
+                case "Junk":
+                    container.innerHTML = `
+                        <label><input type="radio" name="choice" value="Small"> Small ($10)</label><br>
+                        <label><input type="radio" name="choice" value="Medium"> Medium ($50)</label><br>
+                        <label><input type="radio" name="choice" value="Large"> Large ($100)</label><br>
+                        <button onclick="SelectJunk()">Calculate Price</button>
+                    `;
+                    break;
+                case "Rearrangement":
+                    container.innerHTML = `
+                        <label><input type="radio" name="choice" value="Small"> Small ($20)</label><br>
+                        <label><input type="radio" name="choice" value="Medium"> Medium ($60)</label><br>
+                        <label><input type="radio" name="choice" value="Large"> Large ($120)</label><br>
+                        <button onclick="SelectRearangement()">Calculate Price</button>
+                    `;
+                    break;
+                case "Gardening":
+                    container.innerHTML = `
+                        <label>Number of Items/Plants:</label>
+                        <input type="number" id="numquantity" min="1">
+                        <button onclick="PriceFlowers()">Calculate Price</button>
+                    `;
+                    break;
+            }
+        }
+
+        function generateInputs(){
+            const num = parseInt(document.getElementById("numAreas").value);
+            const container = document.getElementById("areasContainer");
+            container.innerHTML = '';
+
+            if (isNaN(num) || num <= 0){
+                container.innerHTML = "Invalid Input";
+                return;
+            }
+
+            for (let i = 0; i < num; i++){
+                container.innerHTML += `
+                <div>
+                    <label>Input for Area ${i + 1}</label><br>
+                    <input type="number" class="length" placeholder="Length" min="1">
+                    <label>x</label>
+                    <input type="number" class="width" placeholder="Width" min="1">
+                </div>
+                <br>
+                `;
+            }
+
+            container.innerHTML += '<button id="generateResult" onclick="calculateArea()">See price</button>';
+        }
+
+        function calculateArea(){
+            const lengths = document.getElementsByClassName("length");
+            const widths = document.getElementsByClassName("width");
+            let totalArea = 0;
+
+            for (let i = 0; i < lengths.length; i++){
+                const l = parseFloat(lengths[i].value);
+                const w = parseFloat(widths[i].value);
+
+                if (isNaN(l) || isNaN(w)){
+                    document.getElementById("result").innerText = "Invalid Input";
+                    return;
+                }
+
+                totalArea += l * w;
+            }
+
+            document.getElementById("result").innerText =
+                "Total Price in Area: $" + totalArea;
+        }
+
+        function PriceMaintenence(){
+            const amount = document.getElementById("numquantity").value;
+
+            if (isNaN(amount)){
+                document.getElementById("result").innerText = "Invalid Input";
+                return;
+            }
+            
+            const price = amount * 50;
+            document.getElementById("result").innerText = "Total price: $" + price;
+        }
+
+        function SelectCleaning() {
+            const selectedOption = document.querySelector('input[name="choice"]:checked');
+            if (selectedOption) {
+                const value = selectedOption.value;
+                let price = value === "Gutter Cleaning" ? 10 : 50;
+                document.getElementById("result").textContent = "The price for " + value + " is $" + price;
+            } else {
+                document.getElementById("result").textContent = "No option selected";
+            }
+        }
+
+        function SelectJunk() {
+            const selectedOption = document.querySelector('input[name="choice"]:checked');
+            if (selectedOption) {
+                const value = selectedOption.value;
+                let price = value === "Small" ? 10 : value === "Medium" ? 50 : 100;
+                document.getElementById("result").textContent = "The price for " + value + " is $" + price;
+            } else {
+                document.getElementById("result").textContent = "No option selected";
+            }
+        }
+
+        function SelectRearangement() {
+            const selectedOption = document.querySelector('input[name="choice"]:checked');
+            if (selectedOption) {
+                const value = selectedOption.value;
+                let price = value === "Small" ? 20 : value === "Medium" ? 60 : 120;
+                document.getElementById("result").textContent = "The price for " + value + " is $" + price;
+            } else {
+                document.getElementById("result").textContent = "No option selected";
+            }
+        }
+
+        function PriceFlowers(){
+            const amount = document.getElementById("numquantity").value;
+            if (isNaN(amount)){
+                document.getElementById("result").innerText = "Invalid Input";
+                return;
+            }
+            const price = amount * 0.50;
+            document.getElementById("result").innerText = "Total price: $" + price;
+        }
+
+    </script>
+</body>
+</html>

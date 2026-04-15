@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Job Experience</title>
+
+    <!-- Import Google Font for consistent modern UI styling -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Reset default spacing and apply consistent font across page */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Background styling with pattern and base color */
+        body {
+            background-color: #d2d2d2;
+            background-image: url("data:image/svg+xml,%3Csvg width='42' height='44' viewBox='0 0 42 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2303ed07' fill-opacity='0.5'%3E%3Cpath d='M0 0h42v44H0V0zm1 1h40v20H1V1zM0 23h20v20H0V23zm22 0h20v20H22V23z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Dark overlay to improve readability over background */
+        .overlay {
+            min-height: 100vh;
+            padding: 30px;
+            background: rgba(0,0,0,0.4);
+        }
+
+        /* Main content container styling */
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: rgba(255,255,255,0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        /* Page title styling */
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Section headers spacing */
+        h3 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        /* Labels for form elements */
+        label {
+            font-weight: 500;
+        }
+
+        /* Group container for each slider */
+        .slider-group {
+            margin-bottom: 25px;
+        }
+
+        /* Style for range sliders */
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: #ccc;
+            border-radius: 5px;
+            appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: green;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: green;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Displays formatted slider value under each input */
+        .value-display {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Styling for text area input */
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #999;
+        }
+
+        /* Dropdown styling */
+        select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #999;
+        }
+
+        /* Submit button styling */
+        button {
+            width: 100%;
+            padding: 12px;
+            background: green;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        /* Hover effect for submit button */
+        button:hover {
+            background: darkgreen;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Dark overlay for contrast over background pattern -->
+<div class="overlay">
+    <!-- Main form container -->
+    <div class="container">
+
+        <!-- Page title -->
+        <h1>Add Job Experience</h1>
+
+        <!-- Form sends data to backend via POST -->
+        <form method="POST">
+
+            <h3>Job Experience</h3>
+
+            <!-- Each slider represents years of experience for a job type -->
+            <div class="slider-group">
+                <label>Lawn Mowing</label>
+                <input type="range" name="lawn_mowing" min="0" max="6" step="1" value="0"
+                       oninput="update(this,'lm')">
+                <div class="value-display" id="lm">0 years</div>
+            </div>
+
+            <div class="slider-group">
+                <label>Snow Removal</label>
+                <input type="range" name="snow_removal" min="0" max="6" step="1" value="0"
+                       oninput="update(this,'sr')">
+                <div class="value-display" id="sr">0 years</div>
+            </div>
+
+            <div class="slider-group">
+                <label>Gardening</label>
+                <input type="range" name="gardening" min="0" max="6" step="1" value="0"
+                       oninput="update(this,'gd')">
+                <div class="value-display" id="gd">0 years</div>
+            </div>
+
+            <div class="slider-group">
+                <label>Mulching</label>
+                <input type="range" name="mulching" min="0" max="6" step="1" value="0"
+                       oninput="update(this,'mu')">
+                <div class="value-display" id="mu">0 years</div>
+            </div>
+
+            <div class="slider-group">
+                <label>Raking Leaves</label>
+                <input type="range" name="raking_leaves" min="0" max="6" step="1" value="0"
+                       oninput="update(this,'rl')">
+                <div class="value-display" id="rl">0 years</div>
+            </div>
+
+            <div class="slider-group">
+                <label>Power Washing</label>
+                <input type="range" name="power_washing" min="0" max="6" step="1" value="0"
+                       oninput="update(this,'pw')">
+                <div class="value-display" id="pw">0 years</div>
+            </div>
+
+            <div class="slider-group">
+                <label>Junk Removal</label>
+                <input type="range" name="junk_removal" min="0" max="6" step="1" value="0"
+                       oninput="update(this,'jr')">
+                <div class="value-display" id="jr">0 years</div>
+            </div>
+
+            <div class="slider-group">
+                <label>Item Moving</label>
+                <input type="range" name="item_moving" min="0" max="6" step="1" value="0"
+                       oninput="update(this,'im')">
+                <div class="value-display" id="im">0 years</div>
+            </div>
+
+            <div class="slider-group">
+                <label>Car Washing</label>
+                <input type="range" name="car_washing" min="0" max="6" step="1" value="0"
+                       oninput="update(this,'cw')">
+                <div class="value-display" id="cw">0 years</div>
+            </div>
+
+            <div class="slider-group">
+                <label>Pool Cleaning</label>
+                <input type="range" name="pool_cleaning" min="0" max="6" step="1" value="0"
+                       oninput="update(this,'pc')">
+                <div class="value-display" id="pc">0 years</div>
+            </div>
+
+            <!-- Free response section for user background -->
+            <h3>Tell Us About Yourself</h3>
+            <textarea name="about"></textarea>
+
+            <!-- Background check question -->
+            <h3>Background</h3>
+            <label>Have you ever been convicted of a felony or misdemeanor that resulted in a felony-level charge?</label>
+
+            <!-- Simple yes/no selection -->
+            <select name="felony">
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+            </select>
+
+            <!-- Submit form -->
+            <button type="submit">Save</button>
+
+        </form>
+
+    </div>
+</div>
+
+<script>
+/* This function updates the text under each slider in real time. It converts numeric values into readable experience ranges.*/
+function update(slider, id) {
+    let val = parseInt(slider.value);
+    let text = "";
+
+    if (val === 0) text = "0 years";
+    else if (val === 1) text = "1 year";
+    else if (val === 2) text = "2 years";
+    else if (val === 3) text = "3 years";
+    else if (val === 4) text = "4 years";
+    else if (val === 5) text = "5–9 years";
+    else if (val === 6) text = "10+ years";
+
+    document.getElementById(id).innerText = text;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Labor Services</title>
+
+<!-- Import modern font for consistent UI styling across the app -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    /* Reset default browser styling and enforce consistent box model */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Main page background using static image from Flask */
+    body {
+        background-image: url('{{ url_for("static", filename="images/Background.jpeg") }}');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    /* Dark overlay to improve readability on top of background image */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.25);
+        z-index: -1;
+    }
+
+    /* Main page title styling */
+    h1 {
+        margin: 30px 0 20px 0;
+        font-size: 3rem;
+        color: black;
+        background-color: rgba(255, 255, 255, 0.6);
+        padding: 10px 20px;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    /* Container for main action buttons */
+    .button-container {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    /* Main action buttons (Request / Provide services) */
+    .action-button {
+        height: 50px;
+        width: 180px;
+        border-radius: 5px;
+        font-size: 18px;
+        color: green;
+        background-color: black;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    /* Hover effect for main buttons */
+    .action-button:hover {
+        background-color: darkgreen;
+        color: white;
+    }
+
+    /* Divider line separating sections */
+    .divider {
+        width: 80%;
+        height: 5px;
+        background-color: black;
+        margin-bottom: 20px;
+        border-radius: 2px;
+    }
+
+    /* GRID LAYOUT FOR SERVICE CATEGORIES */
+    .image-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        max-width: 1000px;
+        padding-bottom: 40px;
+    }
+
+    /* Individual service card */
+    .image-card {
+        position: relative;
+        width: 32%;
+        border-radius: 10px;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    /* Service images */
+    .image-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        display: block;
+        transition: 0.3s ease;
+    }
+
+    /* Dark overlay effect when hovering a card */
+    .image-card::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.4);
+        opacity: 0;
+        transition: 0.3s ease;
+    }
+
+    /* Text overlay */
+    .image-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 20px;
+        font-weight: 600;
+        opacity: 0;
+        transition: 0.3s ease;
+        text-align: center;
+        z-index: 2;
+    }
+
+    /* Hover effects for service cards */
+    .image-card:hover::after {
+        opacity: 1;
+    }
+
+    .image-card:hover .image-text {
+        opacity: 1;
+    }
+
+    .image-card:hover img {
+        filter: brightness(0.6);
+    }
+
+    @media (max-width: 900px) {
+        .image-card {
+            width: 48%;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .image-card {
+            width: 90%;
+        }
+    }
+
+    /* TOP LEFT NAVIGATION BUTTONS */
+    .top-left-buttons {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        display: flex;
+        gap: 10px;
+    }
+
+    /* General button styling for top navigation */
+    .top-left-buttons button {
+        padding: 10px 15px;
+        font-size: 14px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    /* Profile and Jobs buttons */
+    .profile-btn {
+        background-color: black;
+        color: green;
+    }
+
+    .profile-btn:hover {
+        background-color: darkgreen;
+        color: white;
+    }
+
+    /* Logout button styling */
+    .logout-btn {
+        background-color: red;
+        color: white;
+    }
+
+    .logout-btn:hover {
+        background-color: darkred;
+    }
+
+</style>
+</head>
+
+<body>
+<!-- TOP LEFT NAVIGATION MENU -->
+<div class="top-left-buttons">
+    <!-- Navigate to user profile page -->
+    <button class="profile-btn" onclick="location.href='/profile'">Profile</button>
+
+    <!-- Navigate to job tracking page -->
+    <button class="profile-btn" onclick="location.href='/my_jobs'">
+        Jobs 
+    </button>
+
+    <!-- Logout user and clear session -->
+    <button class="logout-btn" onclick="location.href='/logout'">Logout</button>
+</div>
+
+<!-- MAIN TITLE -->
+<h1>Labor Services</h1>
+
+<!-- MAIN ACTION BUTTONS -->
+<div class="button-container">
+    <!-- Navigate to job request form -->
+    <button class="action-button" onclick="location.href='/request_services'">
+    Request Services
+    </button>
+    <!-- Navigate to job browsing / provider view -->
+    <button class="action-button" onclick="location.href='/provide_services'">
+        Provide Services
+    </button>
+</div>
+
+<!-- Visual separator between UI sections -->
+<div class="divider"></div>
+
+<!-- SERVICE CATEGORY GRID -->
+<div class="image-grid">
+
+    <!-- Each card represents a job category with image + label -->
+    <div class="image-card">
+        <img src="{{ url_for('static', filename='images/Snow Shoveling.webp') }}">
+        <div class="image-text">Snow Shoveling</div>
+    </div>
+
+    <div class="image-card">
+        <img src="{{ url_for('static', filename='images/mulching.webp') }}">
+        <div class="image-text">Mulching</div>
+    </div>
+
+    <div class="image-card">
+        <img src="{{ url_for('static', filename='images/Mowing.jpg') }}">
+        <div class="image-text">Lawn Mowing</div>
+    </div>
+
+    <div class="image-card">
+        <img src="{{ url_for('static', filename='images/Junk Removal.jpg') }}">
+        <div class="image-text">Junk Removal</div>
+    </div>
+
+    <div class="image-card">
+        <img src="{{ url_for('static', filename='images/Car wash.jpg') }}">
+        <div class="image-text">Car Wash</div>
+    </div>
+
+    <div class="image-card">
+        <img src="{{ url_for('static', filename='images/Pool Cleaning.jpg') }}">
+        <div class="image-text">Pool Cleaning</div>
+    </div>
+
+</div>
+
+</body>
+</html>
